@@ -1,9 +1,17 @@
+import Cadastros.Banco;
+import Cadastros.Conta;
+import Cadastros.Transacao;
+
 import javax.swing.*;
 
 public class Main {
 
     public static void main(String[] args) {
         int opcaoPrincipal = 0, opcaoCadastro, opcaoOperacao, OpacaoRelatorio;
+
+        Banco banco = new Banco();
+        Conta conta = new Conta();
+        Transacao transacao = new Transacao();
 
         while (opcaoPrincipal != 4) {
             opcaoPrincipal = Integer.parseInt(JOptionPane.showInputDialog(
@@ -30,19 +38,19 @@ public class Main {
                                 "Digite uma opcao:"));
                 switch (opcaoPrincipal) {
                     case 1: switch (opcaoCadastro) {
-                        case 1: criaBanco(); break;
-                        case 2: editaBanco(); break;
-                        case 3: excluiBanco(); break;
+                        case 1: banco.criaBanco(); break;
+                        case 2: banco.editaBanco(); break;
+                        case 3: banco.excluiBanco(); break;
                     } break;
                     case 2: switch (opcaoCadastro) {
-                        case 1: criaConta(); break;
-                        case 2: editaConta(); break;
-                        case 3: excluiConta(); break;
+                        case 1: conta.criaConta(); break;
+                        case 2: conta.editaConta(); break;
+                        case 3: conta.excluiConta(); break;
                     } break;
                     case 3: switch (opcaoCadastro) {
-                        case 1: criaTransacao(); break;
-                        case 2: editaTransacao(); break;
-                        case 3: excluiTransacao(); break;
+                        case 1: transacao.criaTransacao(); break;
+                        case 2: transacao.editaTransacao(); break;
+                        case 3: transacao.excluiTransacao(); break;
                     } break;
                     default:
                         JOptionPane.showMessageDialog(null,"Valor invalido, voltando ao menu principal");
