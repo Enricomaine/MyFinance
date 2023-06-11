@@ -41,8 +41,8 @@ public class Main {
                 switch (opcaoPrincipal) {
                     case 1: switch (opcaoCadastro) {
                         case 1: banco.criaBanco(banco, c); break;
-                        case 2: banco.editaBanco(); break;
-                        case 3: banco.excluiBanco(); break;
+                        case 2: banco.editaBanco(c); break;
+                        case 3: banco.excluiBanco(c); break;
                     } break;
                     case 2: switch (opcaoCadastro) {
                         case 1: conta.criaConta(conta, c); break;

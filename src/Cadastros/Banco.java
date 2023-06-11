@@ -21,10 +21,37 @@ public class Banco {
             System.out.println("Erro ao inserir registro: "+e.getMessage());
         }
     };
-    public void editaBanco(){
-        System.out.println("Banco editado");
+    public void editaBanco(Connection c){
+        idBanco = Integer.parseInt(JOptionPane.showInputDialog("Id para edicao: "));
+        PreparedStatement ps = null;
+        String query = "UPDATE myfinance.banco SET descricao = ? WHERE idbanco = ?";
+
+        String descricao = JOptionPane.showInputDialog("Informe a nova descricao: ");
+
+        try {
+            ps = c.prepareStatement(query);
+            ps.setString(1, descricao);
+            ps.setInt(2, idBanco);
+            ps.execute();
+            ps.close();
+            System.out.println("Banco alterado");
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar registro: "+e.getMessage());
+        }
     };
-    public void excluiBanco() {
-        System.out.println("Banco excluido");
+    public void excluiBanco(Connection c) {
+        idBanco = Integer.parseInt(JOptionPane.showInputDialog("Informe o codigo do banco a se removido"));
+
+        PreparedStatement ps = null;
+        String query = "DELETE FROM myfinance.banco WHERE idbanco = ?";
+        try {
+            ps = c.prepareStatement(query);
+            ps.setInt(1, idBanco);
+            ps.execute();
+            ps.close();
+            System.out.println("Banco excluido");
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover registro: "+e.getMessage());
+        }
     };
 }
