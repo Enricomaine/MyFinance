@@ -1,5 +1,6 @@
 package Cadastros;
 
+import javax.swing.*;
 import java.sql.*;
 
 public class Banco {
@@ -7,6 +8,7 @@ public class Banco {
     private String descricao;
 
     public void criaBanco(Banco banco, Connection c){
+        banco.descricao = JOptionPane.showInputDialog("Digite o nome do banco");
         PreparedStatement ps = null;
         String query = "INSERT INTO myfinance.banco (descricao) VALUES (?)";
         try {

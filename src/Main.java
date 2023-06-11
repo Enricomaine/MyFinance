@@ -13,7 +13,7 @@ public class Main {
         Connection c = mysql.getConexao();
         Banco banco = new Banco();
         Conta conta = new Conta();
-        Transacao transacao = new Transacao();
+        CaixaTransacao caixatransacao = new CaixaTransacao();
 
         while (opcaoPrincipal != 4) {
             opcaoPrincipal = Integer.parseInt(JOptionPane.showInputDialog(
@@ -27,17 +27,17 @@ public class Main {
             if (opcaoPrincipal == 1) {
                 opcaoPrincipal = Integer.parseInt(JOptionPane.showInputDialog(
                         "Cadastros\n" +
-                                "1-Bancos\n" +
-                                "2-Conta\n" +
-                                "3-Transacao\n" +
-                                "4-Voltar ao menu\n" +
-                                "Digite uma opcao:"));
+                        "1-Bancos\n" +
+                        "2-Conta\n" +
+                        "3-Transacao\n" +
+                        "4-Voltar ao menu\n" +
+                        "Digite uma opcao:"));
                 opcaoCadastro = Integer.parseInt(JOptionPane.showInputDialog(
                         "1-Criar\n"+
-                                "2-Editar\n"+
-                                "3-Excluir\n"+
-                                "4-Voltar ao menu\n"+
-                                "Digite uma opcao:"));
+                        "2-Editar\n"+
+                        "3-Excluir\n"+
+                        "4-Voltar ao menu\n"+
+                        "Digite uma opcao:"));
                 switch (opcaoPrincipal) {
                     case 1: switch (opcaoCadastro) {
                         case 1: banco.criaBanco(banco, c); break;
@@ -45,14 +45,14 @@ public class Main {
                         case 3: banco.excluiBanco(); break;
                     } break;
                     case 2: switch (opcaoCadastro) {
-                        case 1: conta.criaConta(); break;
+                        case 1: conta.criaConta(conta, c); break;
                         case 2: conta.editaConta(); break;
                         case 3: conta.excluiConta(); break;
                     } break;
                     case 3: switch (opcaoCadastro) {
-                        case 1: transacao.criaTransacao(); break;
-                        case 2: transacao.editaTransacao(); break;
-                        case 3: transacao.excluiTransacao(); break;
+                        case 1: caixatransacao.criaTransacao(caixatransacao, c); break;
+                        case 2: caixatransacao.editaTransacao(); break;
+                        case 3: caixatransacao.excluiTransacao(); break;
                     } break;
                     default:
                         JOptionPane.showMessageDialog(null,"Valor invalido, voltando ao menu principal");

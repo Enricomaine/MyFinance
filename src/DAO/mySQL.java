@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 public class mySQL {
-    String host = "localhost";
+    String host = "localhost:3306";
     String user = "root";
-    String pass = "";
-    String banco = "myFinance";
+    String pass = "myfinance123";
+    String banco = "myfinance";
     String url = "jdbc:mysql://" + host + "/" + banco;
 
     Connection c = null;
