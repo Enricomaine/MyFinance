@@ -1,14 +1,16 @@
-import Cadastros.Banco;
-import Cadastros.Conta;
-import Cadastros.Transacao;
+import Cadastros.*;
+import DAO.*;
 
 import javax.swing.*;
+import java.sql.Connection;
 
 public class Main {
 
     public static void main(String[] args) {
         int opcaoPrincipal = 0, opcaoCadastro, opcaoOperacao, OpacaoRelatorio;
 
+        mySQL mysql = new mySQL();
+        Connection c = mysql.getConexao();
         Banco banco = new Banco();
         Conta conta = new Conta();
         Transacao transacao = new Transacao();
@@ -16,29 +18,29 @@ public class Main {
         while (opcaoPrincipal != 4) {
             opcaoPrincipal = Integer.parseInt(JOptionPane.showInputDialog(
                     "Menu principal\n" +
-                    "1-Cadastros\n" +
-                    "2-Operacoes\n" +
-                    "3-Relatorios\n" +
-                    "4-Sair\n" +
-                    "Digite uma opcao:"));
+                            "1-Cadastros\n" +
+                            "2-Operacoes\n" +
+                            "3-Relatorios\n" +
+                            "4-Sair\n" +
+                            "Digite uma opcao:"));
 
             if (opcaoPrincipal == 1) {
                 opcaoPrincipal = Integer.parseInt(JOptionPane.showInputDialog(
-                                    "Cadastros\n" +
-                                    "1-Bancos\n" +
-                                    "2-Conta\n" +
-                                    "3-Transacao\n" +
-                                    "4-Voltar ao menu\n" +
-                                    "Digite uma opcao:"));
+                        "Cadastros\n" +
+                                "1-Bancos\n" +
+                                "2-Conta\n" +
+                                "3-Transacao\n" +
+                                "4-Voltar ao menu\n" +
+                                "Digite uma opcao:"));
                 opcaoCadastro = Integer.parseInt(JOptionPane.showInputDialog(
-                                "1-Criar\n"+
+                        "1-Criar\n"+
                                 "2-Editar\n"+
                                 "3-Excluir\n"+
                                 "4-Voltar ao menu\n"+
                                 "Digite uma opcao:"));
                 switch (opcaoPrincipal) {
                     case 1: switch (opcaoCadastro) {
-                        case 1: banco.criaBanco(); break;
+                        case 1: banco.criaBanco(banco, c); break;
                         case 2: banco.editaBanco(); break;
                         case 3: banco.excluiBanco(); break;
                     } break;
