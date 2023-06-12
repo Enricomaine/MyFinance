@@ -24,7 +24,7 @@ public class CaixaTransacao {
         }
     };
     public void editaTransacao(){
-        System.out.println("Transacao editado");
+        System.out.println("Transacao editada");
     };
     public void excluiTransacao() {
         System.out.println("Transacao excluido");
