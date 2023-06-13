@@ -4,10 +4,11 @@ import Operacoes.Lancamento;
 
 import javax.swing.*;
 import java.sql.Connection;
+import java.text.ParseException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         int opcaoPrincipal = 0, opcaoCadastro, opcaoCadastroOperacao, opcaoOperacao, opcaoRelatorio;
 
         mySQL mysql = new mySQL();
@@ -92,7 +93,7 @@ public class Main {
                                     "3-excluir\n"+
                                     "Digite a sua opcao: "));
                     switch (opcaoOperacao) {
-                        case 1: lancamento.criaLancamento(); break;
+                        case 1: lancamento.criaLancamento(lancamento, c); break;
                         case 2: lancamento.editaLancamento(); break;
                         case 3: lancamento.excluiLancamento(); break;
                         default: JOptionPane.showMessageDialog(null,"Nenhuma opcao valida selecionada, voltando ao Menu"); break;

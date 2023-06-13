@@ -1,9 +1,7 @@
 package Cadastros;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class CaixaTransacao {
     private int idTransacao;
@@ -32,5 +30,20 @@ public class CaixaTransacao {
     };
     public void excluiTransacao() {
         System.out.println("Transacao excluido");
+    };
+
+    public String getEntradaSaida(int idTransacaoSelecionada,Connection c) {
+        PreparedStatement ps = null;
+        String query = "SELECT entradasaida FROM caixa_transacao WHERE idtransacao = ?";
+
+        try {
+            ps = c.prepareStatement(query);
+            ps.setInt(1, idTransacaoSelecionada);
+            ResultSet rs = ps.executeQuery();
+            return String.valueOf(rs);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return "";
     };
 }
