@@ -59,10 +59,60 @@ public class Lancamento {
         }
     }
 
-    public void editaLancamento(Lancamento lancamento Connection c) {
-        idLan
+    public void editaLancamento(Connection c) {
+        idLancamento = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo do lancamento que voce deseja editar: "));
+
+        idTransacao = Integer.parseInt(JOptionPane.showInputDialog("Selecione a nova transacao: "));
+        if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
+            valorEntrada = Double.parseDouble(JOptionPane.showInputDialog("Informe o novo valor da entrada: "));
+        } else {
+            valorSaida = Double.parseDouble((JOptionPane.showInputDialog("Informe o novo valor da saida: ")));
+        }
+        data = JOptionPane.showInputDialog("Informe a nova data do lancamento: ", "  /  /    ");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date inputData = null;
+
+        try {
+            inputData = dateFormat.parse(data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        PreparedStatement ps = null;
+        String queryEntrada = "UPDATE myfinance.caixa SET idtransacao = ?, data = ?, valorentrada = ?, valorsaida = 0 WHERE idlancamento = ?";
+        String querySaida = "UPDATE myfinance.caixa SET idtransacao = ?, data = ?, valorsaida = ? valorentrada = 0 WHERE idlancamento = ?";
+        try {
+            if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
+                ps = c.prepareStatement(queryEntrada);
+                ps.setDouble(3, valorEntrada);
+            } else {
+                ps = c.prepareStatement(querySaida);
+                ps.setDouble(3, valorSaida);
+            }
+            ps.setInt(1, idTransacao);
+            ps.setDate(2, new java.sql.Date(inputData.getTime()));
+            ps.setInt(4, idLancamento);
+            ps.execute();
+            ps.close();
+            System.out.println("Lancamento atualizado");
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar registro: "+e.getMessage());
+        }
     }
 
-    public void excluiLancamento() {
+    public void excluiLancamento(Connection c) {
+        idLancamento = Integer.parseInt(JOptionPane.showInputDialog("Informe o codigo do lancamento a ser excluido"));
+
+        PreparedStatement ps = null;
+        String query = "DELETE FROM myfinance.caixa WHERE idlancamento = ?";
+        try {
+            ps = c.prepareStatement(query);
+            ps.setInt(1, idLancamento);
+            ps.execute();
+            ps.close();
+            System.out.println("Lancamento excluido");
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover registro: "+e.getMessage());
+        }
     }
 }

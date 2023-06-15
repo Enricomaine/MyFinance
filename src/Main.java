@@ -1,6 +1,7 @@
 import Cadastros.*;
 import DAO.*;
 import Operacoes.Lancamento;
+import Relatorios.Relatorio;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -17,6 +18,7 @@ public class Main {
         Conta conta = new Conta();
         CaixaTransacao caixatransacao = new CaixaTransacao();
         Lancamento lancamento = new Lancamento();
+        Relatorio relatorio = new Relatorio();
 
         while (opcaoPrincipal != 4) {
             opcaoPrincipal = Integer.parseInt(JOptionPane.showInputDialog(
@@ -94,8 +96,8 @@ public class Main {
                                     "Digite a sua opcao: "));
                     switch (opcaoOperacao) {
                         case 1: lancamento.criaLancamento(lancamento, c); break;
-                        case 2: lancamento.editaLancamento(); break;
-                        case 3: lancamento.excluiLancamento(); break;
+                        case 2: lancamento.editaLancamento(c); break;
+                        case 3: lancamento.excluiLancamento(c); break;
                         default: JOptionPane.showMessageDialog(null,"Nenhuma opcao valida selecionada, voltando ao Menu"); break;
                     }
                 }
@@ -104,6 +106,9 @@ public class Main {
                     opcaoRelatorio = Integer.parseInt(JOptionPane.showInputDialog(
                             "1-saldo da conta\n" +
                                     "2-lancamentos em um período"));
+                    switch (opcaoRelatorio) {
+                        case 1: relatorio.
+                    }
                 }
             }
         }
