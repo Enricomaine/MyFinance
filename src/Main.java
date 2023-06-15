@@ -104,10 +104,13 @@ public class Main {
 
                 case 3: {
                     opcaoRelatorio = Integer.parseInt(JOptionPane.showInputDialog(
-                            "1-saldo da conta\n" +
-                                    "2-lancamentos em um período"));
+                            "1-Saldo da conta\n" +
+                                    "2-Lancamentos em um período\n" +
+                                    "3-Lancamentos por transacao"));
                     switch (opcaoRelatorio) {
-                        case 1: relatorio.
+                        case 1: relatorio.saldoEmConta(c);
+                        case 2: relatorio.lancamentoPorPeriodo(c);
+                        case 3: relatorio.lancamentosPorTransacao(c);
                     }
                 }
             }
