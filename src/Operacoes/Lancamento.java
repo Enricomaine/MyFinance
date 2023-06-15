@@ -59,7 +59,8 @@ public class Lancamento {
         }
     }
 
-    public void editaLancamento() {
+    public void editaLancamento(Lancamento lancamento Connection c) {
+        idLan
     }
 
     public void excluiLancamento() {
