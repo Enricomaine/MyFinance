@@ -70,10 +70,10 @@ public class Lancamento {
         }
         data = JOptionPane.showInputDialog("Informe a nova data do lancamento: ", "  /  /    ");
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date inputData = null;
+        Date setData = null;
 
         try {
-            inputData = dateFormat.parse(data);
+            setData = dateFormat.parse(data);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -90,7 +90,7 @@ public class Lancamento {
                 ps.setDouble(3, valorSaida);
             }
             ps.setInt(1, idTransacao);
-            ps.setDate(2, new java.sql.Date(inputData.getTime()));
+            ps.setDate(2, new java.sql.Date(setData.getTime()));
             ps.setInt(4, idLancamento);
             ps.execute();
             ps.close();
