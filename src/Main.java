@@ -77,10 +77,10 @@ public class Main {
                                     caixatransacao.criaTransacao(caixatransacao, c);
                                     break;
                                 case 2:
-                                    caixatransacao.editaTransacao();
+                                    caixatransacao.editaTransacao(c);
                                     break;
                                 case 3:
-                                    caixatransacao.excluiTransacao();
+                                    caixatransacao.excluiTransacao(c);
                                     break;
                             } break;
                         default:
@@ -108,9 +108,9 @@ public class Main {
                                     "2-Lancamentos em um período\n" +
                                     "3-Lancamentos por transacao"));
                     switch (opcaoRelatorio) {
-                        case 1: relatorio.saldoEmConta(c);
-                        case 2: relatorio.lancamentoPorPeriodo(c);
-                        case 3: relatorio.lancamentosPorTransacao(c);
+                        case 1: relatorio.saldoEmConta(c); break;
+                        case 2: relatorio.lancamentoPorPeriodo(c); break;
+                        case 3: relatorio.lancamentosPorTransacao(c); break;
                     }
                 }
             }

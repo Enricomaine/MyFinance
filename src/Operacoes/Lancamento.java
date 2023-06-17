@@ -15,6 +15,7 @@ public class Lancamento {
 
     private int idLancamento;
     private int idTransacao;
+    private int idConta;
     private String data;
     private double valorSaida;
     private double valorEntrada;
@@ -23,6 +24,7 @@ public class Lancamento {
     public void criaLancamento(Lancamento lancamento, Connection c) {
 
         idTransacao = Integer.parseInt(JOptionPane.showInputDialog("Selecione a transacao: "));
+        idConta = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo da conta: "));
         if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
             valorEntrada = Double.parseDouble(JOptionPane.showInputDialog("Informe o valor da entrada: "));
         } else {
@@ -39,8 +41,8 @@ public class Lancamento {
         }
 
         PreparedStatement ps = null;
-        String queryEntrada = "INSERT INTO myfinance.caixa (idtransacao, data, valorentrada) VALUES (?, ?, ?)";
-        String querySaida = "INSERT INTO myfinance.caixa (idtransacao, data, valorsaida) VALUES (?, ?, ?)";
+        String queryEntrada = "INSERT INTO myfinance.caixa (idtransacao, data, valorentrada,idconta) VALUES (?, ?, ?, ?)";
+        String querySaida = "INSERT INTO myfinance.caixa (idtransacao, data, valorsaida,idconta) VALUES (?, ?, ?, ?)";
         try {
             if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
                 ps = c.prepareStatement(queryEntrada);
@@ -51,6 +53,7 @@ public class Lancamento {
             }
             ps.setInt(1, idTransacao);
             ps.setDate(2, new java.sql.Date(inputData.getTime()));
+            ps.setInt(4, idConta);
             ps.execute();
             ps.close();
             System.out.println("Lancamento inserido");

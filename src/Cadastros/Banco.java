@@ -7,21 +7,6 @@ public class Banco {
     private int idBanco;
     private String descricao;
 
-    public void setIdBanco(int idBanco) {
-        this.idBanco = idBanco;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public int getIdBanco() {
-        return idBanco;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
 
     public void criaBanco(Banco banco, Connection c){
         banco.descricao = JOptionPane.showInputDialog("Digite o nome do banco");

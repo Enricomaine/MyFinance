@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 public class Relatorio {
 
     public void consultaBancos(Connection c) {
+        int idbanco;
+        String descricao;
         Statement st = null;
         String query = "SELECT * FROM banco";
 
@@ -21,9 +23,9 @@ public class Relatorio {
 
             while(rs.next()) {
                 Banco banco = new Banco();
-                banco.setIdBanco(rs.getInt("idbanco"));
-                banco.setDescricao(rs.getString("Descricao"));
-                System.out.println("id: "+banco.getIdBanco()+" Descricao: "+banco.getDescricao());
+                idbanco = rs.getInt("idbanco");
+                descricao = rs.getString("Descricao");
+                System.out.println("id: "+idbanco+" Descricao: "+descricao);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -35,7 +37,7 @@ public class Relatorio {
         double saldo;
         Statement st = null;
         String query = "SELECT idconta, sum(VALORENTRADA)-sum(VALORSAIDA) AS saldo FROM caixa GROUP BY idconta";
-
+        StringBuilder rt = new StringBuilder();
         try {
             st = c.createStatement();
 
@@ -44,8 +46,9 @@ public class Relatorio {
                 idconta = rs.getInt("idconta");
                 saldo = rs.getDouble("saldo");
 
-                System.out.println("idConta: "+ idconta + " Saldo: "+saldo);
+                rt.append("idconta: "+idconta+" Saldo: "+saldo+"\n");
             }
+            JOptionPane.showMessageDialog(null, rt.toString());
         } catch (SQLException e) {
             System.out.println("Erro na consulta: "+e.getMessage());
         }
@@ -57,6 +60,7 @@ public class Relatorio {
         double valorsaida, valorEntrada;
         String DATA;
         String query = "SELECT * FROM CAIXA WHERE DATA BETWEEN ? AND ? ORDER BY DATA";
+        StringBuilder rt = new StringBuilder();
 
         String dataInicial = JOptionPane.showInputDialog("Digite a data inicial: ","  /  /   ");
         String dataFinal = JOptionPane.showInputDialog("Digite a data final: ","  /  /   ");
@@ -83,10 +87,12 @@ public class Relatorio {
                 DATA = rs.getString("DATA");
                 valorsaida = rs.getDouble("valorsaida");
                 valorEntrada = rs.getDouble("valorEntrada");
-                System.out.println("idlancamento: "+idlancamento+" idTransacao: "+idTransacao+" DATA: "+DATA+" valorsaida: "+valorsaida+" valorEntrada: "+valorEntrada);
+                rt.append("|idlancamento: "+idlancamento+"| idTransacao: "+idTransacao+"| DATA: "+DATA+"| valorsaida: "+valorsaida+"| valorEntrada: "+valorEntrada+"|\n");
             }
+            JOptionPane.showMessageDialog(null, rt.toString());
             rs.close();
             ps.close();
+
         } catch (SQLException e) {
             System.out.println("Erro na consulta: "+e.getMessage());
         }
@@ -97,6 +103,7 @@ public class Relatorio {
         int idConta, idTransacao;
         double valor;
         String DATA;
+        StringBuilder rt = new StringBuilder();
         String query = "SELECT " +
                 "idconta, " +
                 "idtransacao, " +
@@ -135,8 +142,9 @@ public class Relatorio {
                 idTransacao = rs.getInt("idTransacao");
                 DATA = rs.getString("DATA");
                 valor = rs.getDouble("valor");
-                System.out.println("idconta: "+idConta+" idTransacao: "+idTransacao+" DATA: "+DATA+" valor: "+valor);
+                rt.append("|idconta: "+idConta+"| idTransacao: "+idTransacao+"| DATA: "+DATA+"| valor: "+valor);
             }
+            JOptionPane.showMessageDialog(null, rt.toString());
             rs.close();
             ps.close();
         } catch (SQLException e) {
