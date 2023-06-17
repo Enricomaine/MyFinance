@@ -14,7 +14,7 @@ public class CaixaTransacao {
         descricao = JOptionPane.showInputDialog("Digite o nome da transacao: ");
         entradaSaida = setEntradaSaida();
         PreparedStatement ps = null;
-        String query = "INSERT INTO myfinance.caixa_transacao (descricao, entradasaida) VALUES (?, ?)";
+        String query = "INSERT INTO caixa_transacao (descricao, entradasaida) VALUES (?, ?)";
         try {
             ps = c.prepareStatement(query);
             ps.setString(1, descricao);
