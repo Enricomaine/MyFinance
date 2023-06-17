@@ -1,6 +1,8 @@
 package Operacoes;
 
 import Cadastros.CaixaTransacao;
+import Relatorios.Relatorio;
+import Telas.InputData;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -21,17 +23,18 @@ public class Lancamento {
     private double valorEntrada;
 
     CaixaTransacao caixaTransacao = new CaixaTransacao();
+    Relatorio rel = new Relatorio();
     public void criaLancamento(Lancamento lancamento, Connection c) {
 
-        idTransacao = Integer.parseInt(JOptionPane.showInputDialog("Selecione a transacao: "));
-        idConta = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo da conta: "));
-        if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
+        idTransacao = Integer.parseInt(JOptionPane.showInputDialog(rel.consultaTransacoes(c)+"Selecione a transacao: "));
+        idConta = Integer.parseInt(JOptionPane.showInputDialog(rel.consultaContas(c)+"Digite o codigo da conta: "));
+        if (caixaTransacao.getTipoMovimento(idTransacao, c).equals("Entrada")) {
             valorEntrada = Double.parseDouble(JOptionPane.showInputDialog("Informe o valor da entrada: "));
         } else {
             valorSaida = Double.parseDouble((JOptionPane.showInputDialog("Informe o valor da saida: ")));
         }
-        data = JOptionPane.showInputDialog("Informe a data do lancamento: ", "  /  /    ");
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        data = InputData.InputData("Informa a data do lancamento");
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
         Date inputData = null;
 
         try {
@@ -40,11 +43,11 @@ public class Lancamento {
             e.printStackTrace();
         }
 
-        PreparedStatement ps = null;
-        String queryEntrada = "INSERT INTO myfinance.caixa (idtransacao, data, valorentrada,idconta) VALUES (?, ?, ?, ?)";
-        String querySaida = "INSERT INTO myfinance.caixa (idtransacao, data, valorsaida,idconta) VALUES (?, ?, ?, ?)";
+        PreparedStatement ps;
+        String queryEntrada = "INSERT INTO caixa (idtransacao, data, valorentrada, idconta) VALUES (?, ?, ?, ?)";
+        String querySaida = "INSERT INTO caixa (idtransacao, data, valorsaida, idconta) VALUES (?, ?, ?, ?)";
         try {
-            if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
+            if (caixaTransacao.getTipoMovimento(idTransacao, c).equals("Entrada")) {
                 ps = c.prepareStatement(queryEntrada);
                 ps.setDouble(3, valorEntrada);
             } else {
@@ -65,14 +68,14 @@ public class Lancamento {
     public void editaLancamento(Connection c) {
         idLancamento = Integer.parseInt(JOptionPane.showInputDialog("Digite o codigo do lancamento que voce deseja editar: "));
 
-        idTransacao = Integer.parseInt(JOptionPane.showInputDialog("Selecione a nova transacao: "));
-        if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
+        idTransacao = Integer.parseInt(JOptionPane.showInputDialog(rel.consultaTransacoes(c)+"Selecione a nova transacao: "));
+        if (caixaTransacao.getTipoMovimento(idTransacao, c).equals("Entrada")) {
             valorEntrada = Double.parseDouble(JOptionPane.showInputDialog("Informe o novo valor da entrada: "));
         } else {
             valorSaida = Double.parseDouble((JOptionPane.showInputDialog("Informe o novo valor da saida: ")));
         }
-        data = JOptionPane.showInputDialog("Informe a nova data do lancamento: ", "  /  /    ");
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        data = InputData.InputData("Informe a nova data do lancamento");
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
         Date setData = null;
 
         try {
@@ -81,11 +84,11 @@ public class Lancamento {
             e.printStackTrace();
         }
 
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         String queryEntrada = "UPDATE myfinance.caixa SET idtransacao = ?, data = ?, valorentrada = ?, valorsaida = 0 WHERE idlancamento = ?";
         String querySaida = "UPDATE myfinance.caixa SET idtransacao = ?, data = ?, valorsaida = ? valorentrada = 0 WHERE idlancamento = ?";
         try {
-            if (caixaTransacao.getEntradaSaida(idTransacao, c) == "1") {
+            if (caixaTransacao.getTipoMovimento(idTransacao, c).equals("Entrada")) {
                 ps = c.prepareStatement(queryEntrada);
                 ps.setDouble(3, valorEntrada);
             } else {
@@ -106,8 +109,8 @@ public class Lancamento {
     public void excluiLancamento(Connection c) {
         idLancamento = Integer.parseInt(JOptionPane.showInputDialog("Informe o codigo do lancamento a ser excluido"));
 
-        PreparedStatement ps = null;
-        String query = "DELETE FROM myfinance.caixa WHERE idlancamento = ?";
+        PreparedStatement ps;
+        String query = "DELETE FROM caixa WHERE idlancamento = ?";
         try {
             ps = c.prepareStatement(query);
             ps.setInt(1, idLancamento);

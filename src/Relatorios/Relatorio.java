@@ -1,7 +1,6 @@
 package Relatorios;
 
-import Cadastros.Banco;
-import Operacoes.Lancamento;
+import Telas.InputData;
 
 import javax.swing.*;
 import java.sql.*;
@@ -11,32 +10,84 @@ import java.text.SimpleDateFormat;
 
 public class Relatorio {
 
-    public void consultaBancos(Connection c) {
-        int idbanco;
+    public String consultaBancos(Connection c) {
+        int idBanco;
         String descricao;
-        Statement st = null;
-        String query = "SELECT * FROM banco";
+        Statement st;
+        String query = "SELECT * FROM vw_bancoscadastrados";
 
         try {
             st = c.createStatement();
             ResultSet rs = st.executeQuery(query);
+            StringBuilder rt = new StringBuilder();
 
             while(rs.next()) {
-                Banco banco = new Banco();
-                idbanco = rs.getInt("idbanco");
+                idBanco = rs.getInt("idbanco");
                 descricao = rs.getString("Descricao");
-                System.out.println("id: "+idbanco+" Descricao: "+descricao);
+                rt.append("id: "+idBanco+" Descricao: "+descricao+"\n");
             }
+            return rt.toString();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return "";
+    }
+
+    public String consultaContas(Connection c) {
+        int idConta;
+        int idBanco;
+        String numero;
+        String agencia;
+        Statement st;
+        String query = "SELECT * FROM vw_contascadastradas";
+
+        try {
+            st = c.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            StringBuilder rt = new StringBuilder();
+
+            while(rs.next()) {
+                idConta = rs.getInt("idconta");
+                idBanco = rs.getInt("idbanco");
+                numero = rs.getString("numero");
+                agencia = rs.getString("agencia");
+                rt.append("idconta: "+idConta+" idbanco: "+idBanco+" numero: "+numero+" agencia: "+agencia+"\n");
+            }
+            return rt.toString();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return "";
+    }
+
+    public String consultaTransacoes(Connection c) {
+        int idTransacao;
+        String descricao;
+        Statement st;
+        String query = "SELECT * FROM vw_transacoescadastradas";
+
+        try {
+            st = c.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            StringBuilder rt = new StringBuilder();
+
+            while(rs.next()) {
+                idTransacao = rs.getInt("idTransacao");
+                descricao = rs.getString("descricao");
+                rt.append("idtransacao: "+idTransacao+" descricao: "+descricao+"\n");
+            }
+            return rt.toString();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return "";
     }
 
     public void saldoEmConta(Connection c) {
         int idconta;
         double saldo;
-        Statement st = null;
-        String query = "SELECT idconta, sum(VALORENTRADA)-sum(VALORSAIDA) AS saldo FROM caixa GROUP BY idconta";
+        Statement st;
+        String query = "SELECT * from vw_saldocontas";
         StringBuilder rt = new StringBuilder();
         try {
             st = c.createStatement();
@@ -55,16 +106,16 @@ public class Relatorio {
     }
 
     public void lancamentoPorPeriodo(Connection c) {
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         int idlancamento, idTransacao;
         double valorsaida, valorEntrada;
         String DATA;
         String query = "SELECT * FROM CAIXA WHERE DATA BETWEEN ? AND ? ORDER BY DATA";
         StringBuilder rt = new StringBuilder();
 
-        String dataInicial = JOptionPane.showInputDialog("Digite a data inicial: ","  /  /   ");
-        String dataFinal = JOptionPane.showInputDialog("Digite a data final: ","  /  /   ");
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String dataInicial = InputData.InputData("Data Inicial");
+        String dataFinal = InputData.InputData("Data Final");
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
         java.util.Date setDataInicial = null, setDataFinal = null;
 
         try {
@@ -81,7 +132,6 @@ public class Relatorio {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
-                Lancamento lancamento = new Lancamento();
                 idlancamento = rs.getInt("idlancamento");
                 idTransacao = rs.getInt("idTransacao");
                 DATA = rs.getString("DATA");
@@ -99,28 +149,22 @@ public class Relatorio {
     }
 
     public void lancamentosPorTransacao(Connection c) {
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         int idConta, idTransacao;
         double valor;
         String DATA;
         StringBuilder rt = new StringBuilder();
-        String query = "SELECT " +
-                "idconta, " +
-                "idtransacao, " +
-                "DATA, " +
-                "CASE (SELECT entradasaida FROM CAIXA_TRANSACAO CT WHERE c.IDTRANSACAO = ct.idtransacao) " +
-                "WHEN 0 THEN (SELECT VALORSAIDA FROM caixa) " +
-                "WHEN 1 THEN (SELECT valorentrada FROM caixa) " +
-                "END AS valor " +
-                "FROM caixa c " +
-                "WHERE " +
-                "DATA BETWEEN ? AND ? " +
-                "GROUP BY idconta,IDTRANSACAO, DATA " +
-                "ORDER BY DATA ";
+        String query = "SELECT distinct" +
+                            " vw.* " +
+                            " from " +
+                            " vw_lancamentosportransacao vw, " +
+                            " caixa c " +
+                            " WHERE " +
+                            " c.DATA BETWEEN ? AND ?";
 
-        String dataInicial = JOptionPane.showInputDialog("Digite a data inicial: ","  /  /   ");
-        String dataFinal = JOptionPane.showInputDialog("Digite a data final: ","  /  /   ");
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String dataInicial = InputData.InputData("Data inicial");
+        String dataFinal = InputData.InputData("Data final");
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy");
         java.util.Date setDataInicial = null, setDataFinal = null;
 
         try {
@@ -137,12 +181,10 @@ public class Relatorio {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
-                Lancamento lancamento = new Lancamento();
                 idConta = rs.getInt("idconta");
                 idTransacao = rs.getInt("idTransacao");
-                DATA = rs.getString("DATA");
                 valor = rs.getDouble("valor");
-                rt.append("|idconta: "+idConta+"| idTransacao: "+idTransacao+"| DATA: "+DATA+"| valor: "+valor);
+                rt.append("|idconta: "+idConta+"| idTransacao: "+idTransacao+"| valor: "+valor);
             }
             JOptionPane.showMessageDialog(null, rt.toString());
             rs.close();

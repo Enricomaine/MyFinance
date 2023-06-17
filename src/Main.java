@@ -4,13 +4,11 @@ import Operacoes.Lancamento;
 import Relatorios.Relatorio;
 
 import javax.swing.*;
-import java.security.Principal;
 import java.sql.Connection;
-import java.text.ParseException;
 
 public class Main {
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         String opcaoPrincipal = "";
 
         mySQL mysql = new mySQL();
@@ -21,7 +19,7 @@ public class Main {
         Lancamento lancamento = new Lancamento();
         Relatorio relatorio = new Relatorio();
 
-        while (opcaoPrincipal != "Sair") {
+        while (!opcaoPrincipal.equals("Sair")) {
             String[] principal = {"Cadastros", "Operacoes", "Relatorios", "Sair"};
             opcaoPrincipal = (String) JOptionPane.showInputDialog(null,"Selecione uma das opcoes","MENU PRINCIPAL",JOptionPane.QUESTION_MESSAGE,null, principal, principal[0]);
             switch (opcaoPrincipal) {
@@ -52,10 +50,10 @@ public class Main {
                                     conta.criaConta(conta, c);
                                     break;
                                 case "Editar":
-                                    conta.editaConta();
+                                    conta.editaConta(c);
                                     break;
                                 case "Excluir":
-                                    conta.excluiConta();
+                                    conta.excluiConta(c);
                                     break;
                             }
                             break;
@@ -85,7 +83,7 @@ public class Main {
                         case "Excluir": lancamento.excluiLancamento(c); break;
                         default: JOptionPane.showMessageDialog(null,"Nenhuma opcao valida selecionada, voltando ao Menu"); break;
                     }
-                }
+                } break;
 
                 case "Relatorios": {
                     String[] opcoes = {"Saldo em conta", "Lancamentos por periodo", "Lancamentos por transacao"};
@@ -96,7 +94,7 @@ public class Main {
                         case "Lancamentos por periodo": relatorio.lancamentoPorPeriodo(c); break;
                         case "Lancamentos por transacao": relatorio.lancamentosPorTransacao(c); break;
                     }
-                }
+                } break;
             }
         }
     }

@@ -1,35 +1,38 @@
 package Cadastros;
 
+import Relatorios.Relatorio;
+
 import javax.swing.*;
 import java.sql.*;
 
 public class CaixaTransacao {
     private int idTransacao;
     private String descricao;
-    private int entradaSaida;
+    private String tipoMovimento;
 
-    public void criaTransacao(CaixaTransacao caixatransacao, Connection c){
-        String[] opcoes = {"Entrada", "Saida"};
-        String opcao;
+    Relatorio rel = new Relatorio();
+
+    public void criaTransacao(CaixaTransacao caixatransacao, Connection c) {
         descricao = JOptionPane.showInputDialog("Digite o nome da transacao: ");
-        entradaSaida = setEntradaSaida();
-        PreparedStatement ps = null;
+        tipoMovimento = setTipoMovimento();
+        PreparedStatement ps;
         String query = "INSERT INTO caixa_transacao (descricao, entradasaida) VALUES (?, ?)";
         try {
             ps = c.prepareStatement(query);
             ps.setString(1, descricao);
-            ps.setInt(2, entradaSaida);
+            ps.setString(2, setTipoMovimento());
             ps.execute();
             ps.close();
             System.out.println("Transacao criada");
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir registro: "+e.getMessage());
+            System.out.println("Erro ao inserir registro: " + e.getMessage());
         }
-    };
-    public void editaTransacao(Connection c){
-        PreparedStatement ps = null;
+    }
+
+    public void editaTransacao(Connection c) {
+        PreparedStatement ps;
         String query = "UPDATE CAIXA_TRANSACAO SET descricao = ? WHERE idtransacao = ?";
-        idTransacao = Integer.parseInt(JOptionPane.showInputDialog("Digite a transacao a ser editada: "));
+        idTransacao = Integer.parseInt(JOptionPane.showInputDialog(rel.consultaTransacoes(c) + "Digite a transacao a ser editada: "));
         descricao = JOptionPane.showInputDialog("Digite a nova descricao");
         try {
             ps = c.prepareStatement(query);
@@ -38,14 +41,15 @@ public class CaixaTransacao {
             ps.execute();
             ps.close();
             System.out.println("Transacao editada");
-        } catch (SQLException e){
-            System.out.println("Erro ao editar registro: "+e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Erro ao editar registro: " + e.getMessage());
         }
-    };
-    public void excluiTransacao(Connection c) {
-        idTransacao = Integer.parseInt(JOptionPane.showInputDialog("Informe o codigo do banco a se removido"));
+    }
 
-        PreparedStatement ps = null;
+    public void excluiTransacao(Connection c) {
+        idTransacao = Integer.parseInt(JOptionPane.showInputDialog(rel.consultaTransacoes(c) + "Informe o codigo do banco a se removido"));
+
+        PreparedStatement ps;
         String query = "DELETE FROM caixa_transacao WHERE idtransacao = ?";
         try {
             ps = c.prepareStatement(query);
@@ -54,33 +58,33 @@ public class CaixaTransacao {
             ps.close();
             System.out.println("Transacao excluida");
         } catch (SQLException e) {
-            System.out.println("Erro ao remover registro: "+e.getMessage());
+            System.out.println("Erro ao remover registro: " + e.getMessage());
         }
-    };
+    }
 
-    public String getEntradaSaida(int idTransacaoSelecionada,Connection c) {
-        PreparedStatement ps = null;
-        String query = "SELECT entradasaida FROM caixa_transacao WHERE idtransacao = ?";
+    public String getTipoMovimento(int idTransacaoSelecionada, Connection c) {
+        PreparedStatement ps;
+        String tipoMovimento;
+        String query = "SELECT tipoMovimento FROM caixa_transacao WHERE idtransacao = ?";
 
         try {
             ps = c.prepareStatement(query);
             ps.setInt(1, idTransacaoSelecionada);
             ResultSet rs = ps.executeQuery();
-            return String.valueOf(rs);
+            if (rs.next()) {
+                tipoMovimento = rs.getString("tipoMovimento");
+            } else {
+                tipoMovimento = "";
+            }
+            return tipoMovimento;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return "";
-    };
+    }
 
-    public int setEntradaSaida() {
+    public String setTipoMovimento() {
         String[] opcoes = {"Entrada", "Saida"};
-        String opcao;
-        opcao = (String) JOptionPane.showInputDialog(null,"Selecione uma das opcoes","Tipo de movimento",JOptionPane.QUESTION_MESSAGE,null,opcoes, opcoes[0]);
-        if (opcao.equals("Entrada")) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return (String) JOptionPane.showInputDialog(null, "Selecione uma das opcoes", "Tipo de movimento", JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
     }
 }
