@@ -150,17 +150,26 @@ public class Relatorio {
 
     public void lancamentosPorTransacao(Connection c) {
         PreparedStatement ps;
-        int idConta, idTransacao;
+        int idConta;
+        String descricao;
         double valor;
         String DATA;
         StringBuilder rt = new StringBuilder();
-        String query = "SELECT distinct" +
-                            " vw.* " +
-                            " from " +
-                            " vw_lancamentosportransacao vw, " +
-                            " caixa c " +
-                            " WHERE " +
-                            " c.DATA BETWEEN ? AND ?";
+        String query = "SELECT " +
+                "c.idConta AS idconta,  " +
+                "ct.descricao AS descricao,  " +
+                "(CASE (SELECT  " +
+                "ct.tipoMovimento " +
+                "FROM caixa_transacao ct " +
+                "WHERE (c.idtransacao = ct.idtransacao)) " +
+                "WHEN 'Entrada' THEN (SELECT sum(c2.valorentrada) FROM myfinance.caixa c2 WHERE((c2.idtransacao = c.idtransacao) AND (c2.idConta = c.idConta) AND c2.DATA BETWEEN ? AND ?)) " +
+                "WHEN 'Saida' THEN (SELECT sum(c2.valorsaida) FROM caixa c2 WHERE((c2.idtransacao = c.idtransacao) AND (c2.idConta = c.idConta) AND c2.DATA BETWEEN ? AND ?))  " +
+                "END) AS valor " +
+                "FROM caixa c " +
+                "join caixa_transacao ct on c.idtransacao = ct.idtransacao"+
+                " WHERE " +
+                " c.DATA BETWEEN ? AND ?" +
+                "GROUP BY c.idConta, c.idtransacao;";
 
         String dataInicial = InputData.InputData("Data inicial");
         String dataFinal = InputData.InputData("Data final");
@@ -178,13 +187,17 @@ public class Relatorio {
             ps = c.prepareStatement(query);
             ps.setDate(1, new java.sql.Date(setDataInicial.getTime()));
             ps.setDate(2, new java.sql.Date(setDataFinal.getTime()));
+            ps.setDate(3, new java.sql.Date(setDataInicial.getTime()));
+            ps.setDate(4, new java.sql.Date(setDataFinal.getTime()));
+            ps.setDate(5, new java.sql.Date(setDataInicial.getTime()));
+            ps.setDate(6, new java.sql.Date(setDataFinal.getTime()));
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
                 idConta = rs.getInt("idconta");
-                idTransacao = rs.getInt("idTransacao");
+                descricao = rs.getString("descricao");
                 valor = rs.getDouble("valor");
-                rt.append("|idconta: "+idConta+"| idTransacao: "+idTransacao+"| valor: "+valor);
+                rt.append("|idconta: "+idConta+"| Transacao: "+descricao+"| valor: "+valor+"\n");
             }
             JOptionPane.showMessageDialog(null, rt.toString());
             rs.close();
